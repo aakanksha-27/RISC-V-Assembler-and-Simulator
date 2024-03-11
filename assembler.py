@@ -214,21 +214,27 @@ def format_assembly_language_code(text):
 
 
 def last_line_is_virtual_halt(file_path):
-   #checks the last line of the code and if its a virtual halt returns true otherwise false 
     try:
         with open(file_path, 'r') as file:
-            lines = file.readlines()  # Read all lines from the file
-            last_line = lines[-1].strip()  # Get the last line and remove leading/trailing whitespace
-            
-            if ':' in last_line:             #if there is a label only consider the part after the colon
+            lines = file.readlines()
+
+        if lines:  # Check if there are any lines in the file
+            last_line = lines[-1].strip()
+
+            if ':' in last_line:
                 last_instruction = last_line.split(':')[-1].strip()
-                return last_instruction == "beq zero,zero,0"
             else:
-                return last_line == "beq zero,zero,0"
+                last_instruction = last_line
+
+            return last_instruction == "beq zero,zero,0"
+
+        else:
+            print(f"File '{file_path}' is empty.")
+            return False
+
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
         return False
-
 
 
 
