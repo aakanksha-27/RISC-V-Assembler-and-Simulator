@@ -116,7 +116,6 @@ def imm_to_bin(immediate, bits):
         print("Error: " + str(e))
         raise ValueError
 
-
 def extend_to_20_bits(number):
     #
     if type(number) != int:
@@ -155,6 +154,8 @@ def extend_to_16_bits(number):
     return binary_str
 
 
+
+
 def scan_labels(text):
     code = text.split("\n")
     for line in code:
@@ -167,7 +168,6 @@ def scan_labels(text):
         if instruction[-1] == ':':  # Check if it's a label
             label = instruction[:-1]  # remove : from label name
             labels[label] = None      # replace None with sp when it will be added
-
 
 def format_code(text):
     code = text.split("\n")
@@ -212,6 +212,7 @@ def format_code(text):
     return output
 
 
+
 def virtualhalt(file_path):
    #checks the last line of the code and if its a virtual halt returns true otherwise false 
     try:
@@ -228,6 +229,10 @@ def virtualhalt(file_path):
         print(f"File '{file_path}' not found.")
         return False
 
+
+
+
+# ********************************************************************************
 
 def assembly_language(instruction, operands):
 
@@ -289,25 +294,23 @@ def assembly_language(instruction, operands):
 
 
     elif instruction in ["beq", "bne", "blt", "bge", "bltu", "bgeu"]:
-        if operands == ["zero", "zero", "0"] and instruction == ["beq"]:
-        # Virtual halt instruction detected, return its binary representation
-            return "0000000000000000000000000"+opcode  # Binary representation of beq zero,zero,0x00000000
+        if operands == ["zero", "zero", "0"] and instruction == "beq":
+            # Virtual halt instruction detected, return its binary representation
+            return "0000000000000000000000000" + opcode  # Binary representation of beq zero,zero,0x00000000
     
         rs1 = binary_operand[0]
         rs2 = binary_operand[1]
         imm = extend_to_16_bits(int(binary_operand[2]))  # Assuming 12-bit immediate value
 
         # Extract bits from the immediate value
-        immsign = imm[0]  # Bit 11
-        immfirst = imm[5:11]  # Bits 4 to 1
-        immlast = imm[11:]  # Bits 10 to 5
+        immfirst = imm[:7]  # Bits 11 to 5
+        immsign = imm[7]  # Bit 4
+        immsecond = imm[8:]  # Bits 3 to 0
 
         # Encoding B-type instruction fields
-        btypeval     = immsign + immfirst + rs2 + rs1 + funct3 + immlast + opcode
+        btypeval = immsign + immfirst + rs2 + rs1 + funct3 + immsecond + opcode
 
         return btypeval
-
-
 
     # Utype - auipc rd,imm
     
@@ -333,6 +336,18 @@ def assembly_language(instruction, operands):
 
         return jtypeval
     # + rd + opcode
+    
+# *****************************************************************
+# print(format_code("add s1,s2,s3"))
+# print(format_code("jalr ra,a5,-07"))
+# print(format_code("lw a5,20(s1)"))
+# print(format_code("sw ra,32(sp)"))
+# print(format_code("blt a4,a5,200"))
+# print(format_code("auipc s2,-30"))
+# print(format_code("jal ra,-1024"))
+# print(format_code("beq zero,zero,0"))
+#for debugging
+# *****************************************************************
 
 input_file = open("input.txt" , "r")
 output_file = open("output.txt", "w")
@@ -359,4 +374,6 @@ with open(file_path, 'r') as input_file:
         print("Conversion completed successfully.")
     else:
         print("Virtual Halt instruction not found in the last line. Conversion aborted.")
-        
+
+
+# *****************************************************************
