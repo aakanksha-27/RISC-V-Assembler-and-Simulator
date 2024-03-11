@@ -116,7 +116,7 @@ def imm_to_bin(immediate, bits):
         print("Error: " + str(e))
         raise ValueError
 
-def extend_to_20_bits(number):
+def ex_20_b(number):
     #
     if type(number) != int:
         raise ValueError("Input is not integer")
@@ -135,7 +135,7 @@ def extend_to_20_bits(number):
     return binary_str
 
 
-def extend_to_16_bits(number):
+def ex_16_b(number):
     # Input validation
     if not isinstance(number, int):
         raise ValueError("Input must be an integer")
@@ -169,7 +169,7 @@ def scan_labels(text):
             label = instruction[:-1]  # remove : from label name
             labels[label] = None      # replace None with sp when it will be added
 
-def format_code(text):
+def format_assembly_language_code(text):
     code = text.split("\n")
     output=''
     scan_labels(text)
@@ -213,7 +213,7 @@ def format_code(text):
 
 
 
-def virtualhalt(file_path):
+def last_line_is_virtual_halt(file_path):
    #checks the last line of the code and if its a virtual halt returns true otherwise false 
     try:
         with open(file_path, 'r') as file:
@@ -300,7 +300,7 @@ def assembly_language(instruction, operands):
     
         rs1 = binary_operand[0]
         rs2 = binary_operand[1]
-        imm = extend_to_16_bits(int(binary_operand[2]))  # Assuming 12-bit immediate value
+        imm = ex_16_b(int(binary_operand[2]))  # Assuming 12-bit immediate value
 
         # Extract bits from the immediate value
         immfirst = imm[:7]  # Bits 11 to 5
@@ -326,7 +326,7 @@ def assembly_language(instruction, operands):
    
     elif instruction=="jal":
         rd= binary_operand[0]
-        imm=extend_to_20_bits(int(binary_operand[1])) 
+        imm=ex_20_b(int(binary_operand[1])) 
          
         immsign=imm[0]   
         immfirst=imm[9:19]
@@ -338,14 +338,14 @@ def assembly_language(instruction, operands):
     # + rd + opcode
     
 # *****************************************************************
-# print(format_code("add s1,s2,s3"))
-# print(format_code("jalr ra,a5,-07"))
-# print(format_code("lw a5,20(s1)"))
-# print(format_code("sw ra,32(sp)"))
-# print(format_code("blt a4,a5,200"))
-# print(format_code("auipc s2,-30"))
-# print(format_code("jal ra,-1024"))
-# print(format_code("beq zero,zero,0"))
+# print(format_assembly_language_code("add s1,s2,s3"))
+# print(format_assembly_language_code("jalr ra,a5,-07"))
+# print(format_assembly_language_code("lw a5,20(s1)"))
+# print(format_assembly_language_code("sw ra,32(sp)"))
+# print(format_assembly_language_code("blt a4,a5,200"))
+# print(format_assembly_language_code("auipc s2,-30"))
+# print(format_assembly_language_code("jal ra,-1024"))
+# print(format_assembly_language_code("beq zero,zero,0"))
 #for debugging
 # *****************************************************************
 
@@ -358,7 +358,7 @@ with open(file_path, 'r') as input_file:
     lines = input_file.readlines()  # Read all lines from the input file
     
     # Check if the last line contains the Virtual Halt instruction
-    if virtualhalt(file_path):
+    if last_line_is_virtual_halt(file_path):
         # If Virtual Halt is found, proceed with conversion
         with open("output.txt", "w") as output_file:
             # Iterate through each line in the input file
@@ -367,8 +367,8 @@ with open(file_path, 'r') as input_file:
                 line = line.strip()
                 if not line:
                     continue
-                # Call the format_code function and write the formatted line to the output file
-                formatted_output = format_code(line)
+                # Call the format_assembly_language_code function and write the formatted line to the output file
+                formatted_output = format_assembly_language_code(line)
                 print(formatted_output)
                 output_file.write(formatted_output + "\n")
         print("Conversion completed successfully.")
