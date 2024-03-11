@@ -343,22 +343,9 @@ def assembly_language(instruction, operands):
         return jtypeval
     # + rd + opcode
     
-# *****************************************************************
-# print(format_assembly_language_code("add s1,s2,s3"))
-# print(format_assembly_language_code("jalr ra,a5,-07"))
-# print(format_assembly_language_code("lw a5,20(s1)"))
-# print(format_assembly_language_code("sw ra,32(sp)"))
-# print(format_assembly_language_code("blt a4,a5,200"))
-# print(format_assembly_language_code("auipc s2,-30"))
-# print(format_assembly_language_code("jal ra,-1024"))
-# print(format_assembly_language_code("beq zero,zero,0"))
-#for debugging
-# *****************************************************************
-
 input_file = open("input.txt" , "r")
 output_file = open("output.txt", "w")
 
-# Read the input file
 file_path = "input.txt"
 with open(file_path, 'r') as input_file:
     lines = input_file.readlines()  # Read all lines from the input file
@@ -367,9 +354,7 @@ with open(file_path, 'r') as input_file:
     if last_line_is_virtual_halt(file_path):
         # If Virtual Halt is found, proceed with conversion
         with open("output.txt", "w") as output_file:
-            # Iterate through each line in the input file
             for line in lines:
-                # Remove any leading or trailing whitespace
                 line = line.strip()
                 if not line:
                     continue
@@ -380,6 +365,3 @@ with open(file_path, 'r') as input_file:
         print("Conversion completed successfully.")
     else:
         print("Virtual Halt instruction not found in the last line. Conversion aborted.")
-
-
-# *****************************************************************
