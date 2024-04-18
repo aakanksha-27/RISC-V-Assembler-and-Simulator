@@ -1,5 +1,5 @@
 class Processor:
-    def _init_(self):
+    def __init__(self):
         self.pc = 0
         self.registers = [0] * 32
         self.memory = [0] * (2**20)  # Assuming a memory size of 1MB
@@ -20,7 +20,7 @@ class Processor:
         rs2 = ins[::-1][20:25][::-1]
         funct3 = ins[::-1][12:15][::-1]
         funct7 = ins[::-1][25:32][::-1]
-    
+   
         if funct3 == '000' and funct7 == '0000000':  # ADD
             self.registers[self.bin_to_int(rd, 0)] = self.registers[self.bin_to_int(rs1, 0)] + self.registers[self.bin_to_int(rs2, 0)]
         elif funct3 == '000' and funct7 == '0100000':  # SUB
@@ -39,7 +39,7 @@ class Processor:
             self.registers[self.bin_to_int(rd, 0)] = 1 if self.registers[self.bin_to_int(rs1, 0)] < self.registers[self.bin_to_int(rs2, 0)] else 0
         elif funct3 == '101' and funct7 == '0000000':  # SRL
             self.registers[self.bin_to_int(rd, 0)] = self.registers[self.bin_to_int(rs1, 0)] >> self.registers[self.bin_to_int(rs2, 0)]
-    
+   
         self.pc += 1
 
 
@@ -47,22 +47,22 @@ class Processor:
         opcode = instruction[-7:]
         imm = instruction[::-1][20:32][::-1]
         imm_value = self.bin_to_int(imm, 1)  # Sign-extend the immediate value
-    
+   
         rd = self.bin_to_int(instruction[::-1][7:12][::-1], 0)
         rs1 = self.bin_to_int(instruction[::-1][15:20][::-1], 0)
         funct3 = instruction[::-1][12:15][::-1]
-    
+   
         match opcode:
             case '1100111':  # jalr
                 self.registers[rd] = 4 * (self.pc + 1) + 4
                 self.pc = (self.registers[rs1] + imm_value) // 4
-    
+   
             case '0010011':  # I-type instructions
                 if funct3 == '011':  # sltiu
                     self.registers[rd] = 1 if self.registers[rs1] < imm_value else 0
                 elif funct3 == '000':  # addi
                     self.registers[rd] = self.registers[rs1] + imm_value
-    
+   
         self.pc += 1
 
     def stype(self, ins):
@@ -80,14 +80,14 @@ class Processor:
         opcode = instruction[-7:]
         imm = instruction[-31] + instruction[::-1][7:12][::-1] + instruction[-32:-25] + instruction[-20:-12] + instruction[-21] + '0'
         imm_value = self.bin_to_int(imm, 1)  # Sign-extend the immediate value
-    
+   
         rs1 = self.bin_to_int(instruction[::-1][15:20][::-1], 0)
         rs2 = self.bin_to_int(instruction[::-1][20:25][::-1], 0)
         funct3 = instruction[::-1][12:15][::-1]
-    
+   
         rs1_value = self.registers[rs1]
         rs2_value = self.registers[rs2]
-    
+   
         done = False
         match funct3:
             case '000':  # beq
@@ -114,7 +114,7 @@ class Processor:
                 if rs1_value < rs2_value:
                     self.pc = self.pc + imm_value // 4
                     done = True
-    
+   
         if not done:
             self.pc += 1
 
@@ -225,5 +225,5 @@ def main():
         if mem != 0:
             print(f"    {i}: {mem}")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
