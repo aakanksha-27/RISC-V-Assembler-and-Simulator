@@ -1,4 +1,4 @@
-fn = open("output_2.txt","w")
+fn = open("output.txt","w")
 fn.close()
 
 
